@@ -7,7 +7,7 @@ import networkx as nx
 graph = utilities.loadDummyDataset()
 
 # REAL DATASET GRAPH
-# graph = utilities.loadDataset("football\\out.dimacs10-football.txt")
+# graph = utilities.loadDataset("karate\\karate-edges.txt")
 
 
 all_similarities = []
@@ -35,9 +35,10 @@ for node in graph:
     index += 1
 
 print(most_similar_nodes)
-connected_comp = utilities.getLegitCombinations(most_similar_nodes)
+connected_comp = utilities.getLegitCombinations(most_similar_nodes, 100)
+unique_connected_comp = utilities.getUniqueConnectedComponents(connected_comp)
+print(len(connected_comp))
 print(connected_comp)
-# unique_connected_comp = utilities.getUniqueConnectedComponents(connected_comp)
 #
 # # print(unique_connected_comp)
 #
@@ -50,6 +51,8 @@ print(connected_comp)
 #
 # threshold = 19
 # max_modularity = 0
+# best_partition = []
+# best_threshold = 0
 # for i in range(1, threshold+1):
 #     optimized_communities = []
 #     for basic_community in all_possible_basic_communities:
@@ -69,8 +72,6 @@ print(connected_comp)
 # print(best_partition)
 # print(max_modularity)
 # print(best_threshold)
-#     #optimized_communities.append(communities)
-# #print(optimized_communities)
-#
-#
-# #print(mergingStrategy(graph, [[('0', '4'), ('1', '4')], [('2', '10')], [('5', '8'), ('3', '6'), ('9', '8'), ('6', '5'), ('7', '6')]], threshold))
+
+
+#print(mergingStrategy(graph, [[('0', '4'), ('1', '4')], [('2', '10')], [('5', '8'), ('3', '6'), ('9', '8'), ('6', '5'), ('7', '6')]], threshold))

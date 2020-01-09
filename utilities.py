@@ -79,56 +79,64 @@ def similarityIndex(G, u, v):
 
 
 # A FUNCTION TO RETURN ALL POSSIBLE VALID COMBINATION OF A GIVEN LIST OF TUPLES
-def getLegitCombinations(most_similar_node_list):
-    """
-    param most_similar_node_list: A list of pairs of the most similar nodes
-    returns: All legit combinations of edges
-    """
-    different_values = []
-    # WE EXTRACT ALL DIFFERENT VALUES OF FIRST NODES IN AN EDGE AND STORE THEM IN A LIST
-    for (u, v) in most_similar_node_list:
-        if u not in different_values:
-            different_values.append(u)
-    # WE TAKE ALL THE POSSIBLE COMBINATIONS WITH LENGTH EQUAL TO THE DIFFERENT VALUES OF NODES
-    all_combinations = list(combinations(most_similar_node_list, len(different_values)))
-
-    legit_combinations_list = []
-    # WE TRAVERSE ALL POSSIBLE COMBINATIONS AND KEEP IN A LIST ONLY THE VALID ONES
-    for tp in all_combinations:
-        legit_combination = True
-        for i in range(0, len(different_values)):
-            # BECAUSE OUR all_combinations LIST IS SORTED THE VALID COMBINATIONS WILL HAVE THE DIFFERENT NODE VALUES
-            # IN ORDER AND EXACTLY ONE TIME
-            if tp[i][0] != different_values[i]:
-                legit_combination = False
-        if legit_combination:
-            legit_combinations_list.append(list(tp))
-            if len(legit_combinations_list) == 100:
-                return legit_combinations_list
-    print(len(legit_combinations_list))
-    return list(legit_combinations_list)
-
 # def getLegitCombinations(most_similar_node_list):
-#     legit_combinations = []
-#     i = 0
-#     while i < len(most_similar_node_list) - 1:
-#         temp_comb = []
-#         counter = 0
-#         if not legit_combinations:
-#             legit_combinations.append([most_similar_node_list[i]])
-#             continue
-#         if most_similar_node_list[i][0] == most_similar_node_list[i+1][0]:
-#             counter = 1
-#             while most_similar_node_list[i][0] == most_similar_node_list[i+counter][0]:
-#                 counter += 1
-#                 temp_comb.append([most_similar_node_list[counter + i - 1]])
-#             legit_combinations = list(product(legit_combinations, temp_comb))
-#         else:
-#             for comb in legit_combinations:
-#                 comb.append(most_similar_node_list[i])
-#                 i += 1
-#                 continue
-#         i += counter
+#     """
+#     param most_similar_node_list: A list of pairs of the most similar nodes
+#     returns: All legit combinations of edges
+#     """
+#     different_values = []
+#     # WE EXTRACT ALL DIFFERENT VALUES OF FIRST NODES IN AN EDGE AND STORE THEM IN A LIST
+#     for (u, v) in most_similar_node_list:
+#         if u not in different_values:
+#             different_values.append(u)
+#     # WE TAKE ALL THE POSSIBLE COMBINATIONS WITH LENGTH EQUAL TO THE DIFFERENT VALUES OF NODES
+#     all_combinations = list(combinations(most_similar_node_list, len(different_values)))
+#
+#     legit_combinations_list = []
+#     # WE TRAVERSE ALL POSSIBLE COMBINATIONS AND KEEP IN A LIST ONLY THE VALID ONES
+#     for tp in all_combinations:
+#         legit_combination = True
+#         for i in range(0, len(different_values)):
+#             # BECAUSE OUR all_combinations LIST IS SORTED THE VALID COMBINATIONS WILL HAVE THE DIFFERENT NODE VALUES
+#             # IN ORDER AND EXACTLY ONE TIME
+#             if tp[i][0] != different_values[i]:
+#                 legit_combination = False
+#         if legit_combination:
+#             legit_combinations_list.append(list(tp))
+#             if len(legit_combinations_list) == 100:
+#                 return legit_combinations_list
+#     return list(legit_combinations_list)
+
+def getLegitCombinations(most_similar_node_list, num_of_comb):
+    legit_combinations = []
+    i = 0
+    while i < len(most_similar_node_list):
+        length_of_comb = len(most_similar_node_list) - 1
+        counter = 1
+        k = i
+        if i < length_of_comb - 1:
+            while most_similar_node_list[i][0] == most_similar_node_list[k+1][0]:
+                counter += 1
+                k += 1
+        if not legit_combinations:
+            legit_combinations.append([most_similar_node_list[i]])
+            i += 1
+            continue
+        curr_num_of_comb = len(legit_combinations)
+        for m in range(0, counter):
+            for j in range(0, curr_num_of_comb):
+                if legit_combinations[j][-1][0] == most_similar_node_list[i][0]:
+                        new_comb = legit_combinations[j][:]
+                        # for n in range(0, counter - 1):
+                        new_comb.pop()
+                        new_comb.append(most_similar_node_list[i+m])
+                        legit_combinations.append(new_comb)
+                else:
+                    legit_combinations[j].append(most_similar_node_list[i])
+        i += counter
+        if len(legit_combinations) >= num_of_comb:
+            return legit_combinations[:100]
+    return legit_combinations
 
 
 
