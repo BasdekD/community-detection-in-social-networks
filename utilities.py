@@ -1,4 +1,3 @@
-from itertools import combinations, product
 import operator
 import networkx as nx
 
@@ -79,65 +78,47 @@ def similarityIndex(G, u, v):
 
 
 # A FUNCTION TO RETURN ALL POSSIBLE VALID COMBINATION OF A GIVEN LIST OF TUPLES
-# def getLegitCombinations(most_similar_node_list):
-#     """
-#     param most_similar_node_list: A list of pairs of the most similar nodes
-#     returns: All legit combinations of edges
-#     """
-#     different_values = []
-#     # WE EXTRACT ALL DIFFERENT VALUES OF FIRST NODES IN AN EDGE AND STORE THEM IN A LIST
-#     for (u, v) in most_similar_node_list:
-#         if u not in different_values:
-#             different_values.append(u)
-#     # WE TAKE ALL THE POSSIBLE COMBINATIONS WITH LENGTH EQUAL TO THE DIFFERENT VALUES OF NODES
-#     all_combinations = list(combinations(most_similar_node_list, len(different_values)))
-#
-#     legit_combinations_list = []
-#     # WE TRAVERSE ALL POSSIBLE COMBINATIONS AND KEEP IN A LIST ONLY THE VALID ONES
-#     for tp in all_combinations:
-#         legit_combination = True
-#         for i in range(0, len(different_values)):
-#             # BECAUSE OUR all_combinations LIST IS SORTED THE VALID COMBINATIONS WILL HAVE THE DIFFERENT NODE VALUES
-#             # IN ORDER AND EXACTLY ONE TIME
-#             if tp[i][0] != different_values[i]:
-#                 legit_combination = False
-#         if legit_combination:
-#             legit_combinations_list.append(list(tp))
-#             if len(legit_combinations_list) == 100:
-#                 return legit_combinations_list
-#     return list(legit_combinations_list)
-
 def getLegitCombinations(most_similar_node_list, num_of_comb):
+    """
+    param most_similar_node_list: A list with the pairs of the most similar nodes (can be more than one for each node)
+    param num_of_comb: The limit of legit combinations to be returned
+    return: A list of legit combination from which connected components will be extracted
+    """
     legit_combinations = []
     i = 0
     while i < len(most_similar_node_list):
-        length_of_comb = len(most_similar_node_list) - 1
         counter = 1
         k = i
-        if i < length_of_comb - 1:
+        if i < len(most_similar_node_list) - 2:
+            # WE COUNT THE OCCURRENCES OF EACH NODE IN THE LIST AS FIRST NODE OF THE EDGE
             while most_similar_node_list[i][0] == most_similar_node_list[k+1][0]:
                 counter += 1
                 k += 1
+        # WE CHECK IF THE LIST OF legit_combinations IS EMPTY. IT WILL BE TRUE ONLY FOR THE FIRST NODE OF THE MOST
+        # SIMILAR NODE LIST
         if not legit_combinations:
             legit_combinations.append([most_similar_node_list[i]])
             i += 1
             continue
         curr_num_of_comb = len(legit_combinations)
+        # WE WANT TO REPEAT THIS BLOCK FOR AS MANY TIMES A NODE APPEARS IN THE LIST
         for m in range(0, counter):
             for j in range(0, curr_num_of_comb):
+                # IF THE NODE IS ALREADY IN A COMBINATION OF THE LIST WE CREATE A NEW COMBINATION FOR EVERY
+                # COMBINATION IN THE LIST AND REPLACE THE LAST EDGE THAT CONTAINS THE NODE WE ARE WORKING WITH
+                # WITH THE OTHER POSSIBLE EDGE OF THE NODE. THUS CREATING ALL LEGIT COMBINATIONS WITH EACH MOST SIMILAR
+                # NODES PAIR APPEARING ONLY ONCE IN A COMBINATION AND ALL COMBINATIONS ARE DIFFERENT
                 if legit_combinations[j][-1][0] == most_similar_node_list[i][0]:
-                        new_comb = legit_combinations[j][:]
-                        # for n in range(0, counter - 1):
-                        new_comb.pop()
-                        new_comb.append(most_similar_node_list[i+m])
-                        legit_combinations.append(new_comb)
+                    new_comb = legit_combinations[j][:]
+                    new_comb.pop()
+                    new_comb.append(most_similar_node_list[i+m])
+                    legit_combinations.append(new_comb)
+                # IF THE NODE IS NODE IN THE COMBINATION WE ARE WORKING WITH WE ADD THE EDGE TO THE COMBINATION
                 else:
                     legit_combinations[j].append(most_similar_node_list[i])
         i += counter
-        if len(legit_combinations) >= num_of_comb:
-            return legit_combinations[:100]
-    return legit_combinations
-
+    # WE RETURN THE FIRST num_of_combs COMBINATIONS (IN THE PAPER 100 IS PROPOSED FOR COMPUTATIONAL REASONS)
+    return legit_combinations[:num_of_comb]
 
 
 def getUniqueConnectedComponents(connected_components):
@@ -223,6 +204,7 @@ def mergingStrategy(G, basic_community, threshold):
         merged = False
         if len(list(comp_graph.nodes)) < threshold:
             max_CC = 0
+            node_with_max_CC = 'Error'
             for n in comp_graph:
                 node_CC = getLocalClusteringCoefficient(G, n)
                 if max_CC <= node_CC and not not(G.neighbors(n) - comp_graph.nodes):
