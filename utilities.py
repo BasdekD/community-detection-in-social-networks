@@ -63,18 +63,46 @@ def getLocalClusteringCoefficient(G, n):
 
 
 # A FUNCTION CALCULATING SIMILARITY INDEX OF TWO ADJACENT NODES
-def similarityIndex(G, u, v):
+def similarityIndex(G, u, v, clustering_coefficient):
     """
     param G: A networkx graph
     param u: A node of G
-    param v: A node of G which is also a neighobor of u
+    param v: A node of G which is also a neighbor of u
     returns: The similarity index of u and v
     """
     com_neighbors = nx.common_neighbors(G, u, v)
     similarity = 0
     for n in com_neighbors:
-        similarity += getLocalClusteringCoefficient(G, n)
+        # similarity += getLocalClusteringCoefficient(G, n)
+        similarity += clustering_coefficient[n]
     return similarity
+
+
+def getMostSimilarNodes(graph, clustering_coefficient):
+    most_similar_nodes = []
+    isolated_node_list = []
+    for node in graph.nodes:
+        similar_nodes = []
+        max_similarity = 0
+        for neighbor in graph.neighbors(node):
+            if node == neighbor:
+                continue
+            similarity = similarityIndex(graph, node, neighbor, clustering_coefficient)
+            if not similar_nodes:
+                similar_nodes.append((node, neighbor))
+                max_similarity = similarity
+            elif max_similarity < similarity:
+                similar_nodes.clear()
+                similar_nodes.append((node, neighbor))
+                max_similarity = similarity
+            elif max_similarity == similarity:
+                similar_nodes.append((node, neighbor))
+        if not similar_nodes:
+            isolated_node_list.append(node)
+        else:
+            for tpl in similar_nodes:
+                most_similar_nodes.append(tpl)
+    return most_similar_nodes, isolated_node_list
 
 
 # A FUNCTION TO RETURN ALL POSSIBLE VALID COMBINATION OF A GIVEN LIST OF TUPLES
@@ -228,3 +256,25 @@ def mergingStrategy(G, basic_community, threshold):
                     mergingStrategy(G, basic_community, threshold)
                     break
     return basic_community
+
+
+def getCommunities(partition):
+    partition_dict = {}
+    community_id = 1
+    for community in partition:
+        for node in community:
+            partition_dict[node] = community_id
+        community_id += 1
+    return partition_dict
+
+
+def printResults(best_partition, max_modularity, best_threshold):
+
+    community_id = 1
+    for community in best_partition:
+        print("Community " + str(community_id) + ": " + str(community))
+        community_id += 1
+
+    print("Number of communities: " + str(len(best_partition)))
+    print("Best modularity achieved: " + str(max_modularity))
+    print("Threshold for best partition: " + str(best_threshold))
