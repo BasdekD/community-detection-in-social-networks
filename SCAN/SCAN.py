@@ -104,10 +104,10 @@ def testevaluation (datasetname):
 
 # Import graph from file
 
-graph = nx.read_edgelist(os.getcwd()+"\karate-edges.txt")
+#graph = nx.read_edgelist(os.getcwd()+"\karate-edges.txt")
 #graph = nx.read_edgelist(os.getcwd()+"\dolphins-edges.txt")
 #graph = nx.read_edgelist(os.getcwd()+"\email-Eu-core.txt")
-#graph = nx.read_edgelist(os.getcwd()+"\out.dimacs10-football.txt")
+graph = nx.read_edgelist(os.getcwd()+"\out.dimacs10-football.txt")
 #graph = nx.read_edgelist(os.getcwd()+"\polbooks-edges.txt")
 
 
