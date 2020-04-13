@@ -1,0 +1,15 @@
+Pan, Xiaohui & Xu, Guiqiong & Wang, Bing & Zhang, Tao. (2019). 
+A Novel Community Detection Algorithm Based on Local Similarity of Clustering Coefficient in Social Networks. 
+IEEE Access. PP. 1-1. 10.1109/ACCESS.2019.2937580.
+
+Community structures are integral and independent parts in a network. Community detection plays an important role in social networks for 
+understanding the structure and predicting user behaviors. Many algorithms have been devised for accurate and efficient community detecting,
+but there are few community detection algorithms using node similarity. In most real-world networks, nodes tend to create tightly knit
+groups characterized by a relatively high densityof ties. The higher the clustering coefficient of a node, the more aggregative the 
+neighboring nodes are. In this paper, we propose an adjacent node similarity optimization combination connectivity algorithm (ASOCCA) for 
+accurate community detection. ASOCCA utilizes the local similarity measure based on clustering coefficient to identify the closest 
+neighbors of each node, then obtains several sets of connected components by combining different pairs of nodes, and finally forms initial 
+communities. In addition, the community merging strategy is applied to further optimize the community structure. To evaluate the 
+performance of the proposed algorithm, six real-world networks and two LFR networks with diverse network size are used to compare ASOCCA 
+with five state-of-the-art community detection algorithms. The experimental results show that ASOCCA achieves better detection accuracy
+than several existing algorithms.
